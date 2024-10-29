@@ -3,7 +3,7 @@ package fr.afpa.scraper.services;
 import fr.afpa.scraper.entities.Department;
 import fr.afpa.scraper.entities.Event;
 import fr.afpa.scraper.entities.Style;
-import fr.afpa.scraper.entities.Ville;
+import fr.afpa.scraper.entities.City;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -28,10 +28,7 @@ public class ScrapperService {
      * @param homePageURL l'url de la page d'accueil
      * @return Retourne soit les évenements soit null si pas d'evenements
      */
-    public static ArrayList<Event> getContent(String homePageURL) {
-
-
-
+    public ArrayList<Event> getContent(String homePageURL) {
         Document documentHome = getWebDocument(homePageURL);
         if (documentHome != null) {
             ArrayList<Event> events = getEventsInformation(documentHome);
@@ -58,7 +55,7 @@ public class ScrapperService {
      * @param url url du site à analyser
      * @return un objet du document html
      */
-    public static Document getWebDocument(String url) {
+    public Document getWebDocument(String url) {
         try {
             return Jsoup.connect(url).get();
         } catch (IOException e) {
@@ -67,7 +64,7 @@ public class ScrapperService {
         }
     }
 
-    public static ArrayList<Event> getEventsInformation(Document doc) {
+    public ArrayList<Event> getEventsInformation(Document doc) {
         ArrayList<Event> allEvents = new ArrayList<>();
 
         Elements allElements = doc.select("div.date-row");
@@ -79,18 +76,23 @@ public class ScrapperService {
             for (Element event : events) {
                 String title = event.select("div.concert").text();
                 String placeText = event.select("div.lieu").text();
+                // TODO tester la ligne suivante (modification du sélecteur CSS non testé)
                 String citys = event.select("div.ville > a").text();
                 String hours = event.select("div.heure").text();
                 String prices = event.select("div.prix").text();
 
                 LocalDate dateObject = transformStringToLocalDate(dateStr);
                 LocalTime timeObject = transformStringToTime(hours);
-                String urlImage = null;
+
+                // TODO urlImage est, pour le moment, inutilisé (uniquement disponible pour les fetivals)
+                // faut-il le garder ?
+                // String urlImage = null;
                 boolean isFestival = false;
 
-                if (urlImage != null) {
-                    isFestival = true;
-                }
+                // TODO vérifier le fonctionnement du "if" suivant, pourquoi est-il là ?
+                // if (urlImage != null) {
+                //     isFestival = true;
+                // }
 
                 if (dateObject != null && timeObject != null) {
                     LocalDateTime finalDateTime = LocalDateTime.of(dateObject, timeObject);
@@ -107,27 +109,27 @@ public class ScrapperService {
         return allEvents;
     }
 
-    public static void extractCityAndDepartment(Document doc) {
+    public void extractCityAndDepartment(Document doc) {
         Elements cityElements = doc.select("a.ville");
 
         for (Element cityElement : cityElements) {
             String cityName = cityElement.text().trim();
             String departmentName = cityElement.nextSibling().toString().trim();
 
-            Ville ville = new Ville();
-            ville.setName(cityName);
+            City city = new City();
+            city.setName(cityName);
 
             Department departement = new Department();
             departement.setName(departmentName);
 
-            ville.setDepartment(departement);
+            city.setDepartment(departement);
 
             System.out.println("Ville: " + cityName);
             System.out.println("Département: " + departmentName);
         }
     }
 
-    public static ArrayList<Style> extractStyle(Document doc) {
+    public ArrayList<Style> extractStyle(Document doc) {
         Elements styleElements = doc.select("div.wrapper"); // Ajustez le sélecteur selon votre structure
         ArrayList<Style> styles = new ArrayList<Style>();
         styleElements.forEach(styleElement -> {
@@ -154,7 +156,7 @@ public class ScrapperService {
         return styles;
     }
 
-    public static LocalDate transformStringToLocalDate(String transformStringDate) {
+    public LocalDate transformStringToLocalDate(String transformStringDate) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("EEEE d MMMM yyyy", Locale.FRANCE);
         try {
             TemporalAccessor temporalAccessorDate = dateTimeFormatter.parse(transformStringDate);
@@ -165,7 +167,7 @@ public class ScrapperService {
         }
     }
 
-    public static LocalTime transformStringToTime(String transformStringTime) {
+    public LocalTime transformStringToTime(String transformStringTime) {
         String[] timeParts = transformStringTime.split(" à ");
         String firstTimePart = timeParts[0];
 

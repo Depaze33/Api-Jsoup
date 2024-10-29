@@ -1,7 +1,12 @@
 package fr.afpa.scraper;
 
+import fr.afpa.scraper.entities.Event;
+import fr.afpa.scraper.repository.EventRepository;
 import fr.afpa.scraper.services.ScrapperService;
 import jakarta.annotation.PostConstruct;
+
+import java.util.ArrayList;
+
 import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -14,6 +19,9 @@ public class ScrapperApplication {
     @Autowired
     private ScrapperService service;
 
+    @Autowired
+    private EventRepository eventRepository;
+
     public static void main(String[] args) {
         // Démarrage de l'application Spring Boot
         SpringApplication.run(ScrapperApplication.class, args);
@@ -25,17 +33,15 @@ public class ScrapperApplication {
     @PostConstruct
     public void initialize() {
         String homePageURL = "http://www.tyzicos.com/";
-        Document doc1 = ScrapperService.getWebDocument(homePageURL);
+        Document doc1 = service.getWebDocument(homePageURL);
         if (doc1 != null) {
-            ScrapperService.getEventsInformation(doc1);
-
+            ArrayList<Event> events = service.getEventsInformation(doc1);
+            
+            // TODO peut être faudrait-il appeler le repository pour faire l'insertion en BDD des évènements ?
         }
-        // URL de la deuxième page (ajustez selon votre besoin)
+
+
+
 //        String url2 = "http://www.tyzicos.com/concerts-par-style";
     }
 }
-
-
-//dans la main
-//@autowierd
-

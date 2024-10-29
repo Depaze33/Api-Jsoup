@@ -11,11 +11,10 @@ public class EventDTO {
     private String price;
     private LocalDateTime dateTime;
     private boolean isFestival;
-    private Style style;
+    // TODO ajouter le style plus tard
+    // private Style style;
 
-    public EventDTO() {
-
-    }
+    public EventDTO() {}
 
     public EventDTO(int id, String name, String price, LocalDateTime dateTime, boolean isFestival) {
         this.id = id;
@@ -23,7 +22,7 @@ public class EventDTO {
         this.price = price;
         this.dateTime = dateTime;
         this.isFestival = isFestival;
-        this.style = style;
+        // this.style = style;
     }
 
     public EventDTO(int id, String name, String price, LocalDateTime dateTime, boolean isFestival, int id1) {
@@ -69,11 +68,11 @@ public class EventDTO {
         isFestival = festival;
     }
 
-    public Style getStyle() {
-        return style;
-    }
+    // public Style getStyle() {
+    //     return style;
+    // }
 
-    public void setStyle(Style style) {
-        this.style = style;
-    }
+    // public void setStyle(Style style) {
+    //     this.style = style;
+    // }
 }

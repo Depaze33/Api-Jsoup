@@ -1,6 +1,5 @@
 package fr.afpa.scraper.entities;
 
-
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -8,18 +7,16 @@ import java.util.List;
 @Entity
 @Table(name = "venue")
 public class Venue {
-
-
     @Id
     @GeneratedValue
     private Integer id;
-
 
     private String name;
 
     private String address;
 
-    private String url_image;
+    @Column(name = "url_image")
+    private String urlImage;
 
     @OneToMany(mappedBy = "venue")
     private List<Event> events;
@@ -27,10 +24,11 @@ public class Venue {
     // Relation ManyToOne avec City (1,1 - 0,n)
     @ManyToOne
     @JoinColumn(name = "id_city")
-    private Ville ville;
-public Venue(){
+    private City city;
 
-}
+    public Venue() {
+
+    }
 
     public Integer getId() {
         return id;
@@ -56,11 +54,11 @@ public Venue(){
         this.address = adress;
     }
 
-    public String getUrl_image() {
-        return url_image;
+    public String getUrlImage() {
+        return urlImage;
     }
 
-    public void setUrl_image(String url_image) {
-        this.url_image = url_image;
+    public void setUrlImage(String urlImage) {
+        this.urlImage = urlImage;
     }
 }

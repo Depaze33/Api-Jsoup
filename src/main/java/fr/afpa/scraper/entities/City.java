@@ -4,7 +4,8 @@ import jakarta.persistence.*;
 
 import java.util.List;
 
-public class Ville {
+@Entity
+public class City {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -17,12 +18,12 @@ public class Ville {
     @JoinColumn(name = "id_department")
     private Department department;
 
-    public Ville(int id, String name) {
+    public City(int id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Ville() {
+    public City() {
 
     }
 
